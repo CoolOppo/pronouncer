@@ -19,7 +19,6 @@ fn main() -> Result<(), Box<dyn Error>> {
             deserialize(include_bytes!("../build/wavs.bin")).unwrap();
         let mut wavs: HashMap<String, Vec<i16>> = HashMap::new();
         for (file_name, data) in wav_files {
-            let data = data.clone();
             let reader = BufReader::new(&data[..]);
             let mut wav_reader = WavReader::new(reader).unwrap();
             wavs.insert(
