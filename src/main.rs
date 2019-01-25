@@ -1,46 +1,20 @@
 extern crate bincode;
 extern crate serde_derive;
 
-use bincode::{deserialize, serialize};
+use bincode::deserialize;
 use hashbrown::HashMap;
 use std::env;
 use std::error::Error;
 use std::fs::File;
-use std::io::prelude::*;
-use std::io::BufReader;
 use std::io::Write;
 use std::path::Path;
 use std::process::Command;
+
 fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = env::args().collect();
     let words = &args[1..];
 
-    let mut dict: HashMap<String, Vec<String>> = HashMap::new();
-    if !Path::new("ser.bin").exists() {
-        let mut dict_file_contents = String::new();
-        let mut dict_reader = BufReader::new(File::open(Path::new("./cmudict.dict"))?);
-        dict_reader.read_to_string(&mut dict_file_contents)?;
-
-        for line in dict_file_contents.lines() {
-            let line_split: Vec<&str> = line.split(" ").collect();
-            let word = line_split[0];
-            let phones: Vec<String> = line_split[1..]
-                .iter()
-                .map(|s| s.chars().filter(|&c| !"0123456789".contains(c)).collect())
-                .collect();
-
-            dict.insert(word.to_string(), phones);
-        }
-
-        {
-            let mut file = File::create(Path::new("ser.bin")).unwrap();
-            file.write_all(&serialize(&dict)?)?;
-        }
-    } else {
-        let mut serialized_bytes: Vec<u8> = Vec::new();
-        File::open(Path::new("./ser.bin"))?.read_to_end(&mut serialized_bytes)?;
-        dict = deserialize(&serialized_bytes)?;
-    }
+    let dict: HashMap<String, Vec<String>> = deserialize(include_bytes!("../ser.bin"))?;
     let mut concat_file = String::new();
 
     for word in words.iter() {
