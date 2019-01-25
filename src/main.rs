@@ -40,8 +40,13 @@ fn main() -> Result<(), Box<dyn Error>> {
         },
     )?;
     for word in words.iter() {
+        let word: String = word
+            .to_lowercase()
+            .chars()
+            .filter(|&c| !"'.-".contains(c))
+            .collect();
         let symbols = dict
-            .get(word)
+            .get(&word)
             .unwrap_or_else(|| panic!("Could not find {} in dictionary.", word));
 
         for symbol in symbols.iter() {

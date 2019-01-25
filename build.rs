@@ -17,10 +17,20 @@ fn main() -> Result<(), Box<dyn Error>> {
         let word = line_split[0];
         let phones: Vec<String> = line_split[1..]
             .iter()
-            .map(|s| s.chars().filter(|&c| !"0123456789".contains(c)).collect())
+            .map(|s| {
+                s.chars()
+                    .filter(|&c| !"0123456789'.-".contains(c))
+                    .collect()
+            })
             .collect();
 
-        dict.insert(word.to_string(), phones);
+        dict.insert(
+            word.to_string()
+                .chars()
+                .filter(|&c| !"'.-".contains(c))
+                .collect(),
+            phones,
+        );
     }
 
     {
@@ -33,7 +43,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     let mut wav_files: HashMap<String, Vec<u8>> = HashMap::new();
     for entry in fs::read_dir("./audio")? {
         let entry = entry?;
-        let path = entry.path();
         wav_files.insert(
             String::from(entry.file_name().to_string_lossy()),
             std::fs::read(&entry.path())?,
