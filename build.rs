@@ -1,7 +1,7 @@
 use bincode::serialize;
 use hashbrown::HashMap;
 use std::error::Error;
-use std::fs::File;
+use std::fs::{self, File};
 use std::io::prelude::*;
 use std::io::BufReader;
 use std::io::Write;
@@ -9,7 +9,7 @@ use std::path::Path;
 fn main() -> Result<(), Box<dyn Error>> {
     let mut dict: HashMap<String, Vec<String>> = HashMap::new();
     let mut dict_file_contents = String::new();
-    let mut dict_reader = BufReader::new(File::open(Path::new("./cmudict.dict"))?);
+    let mut dict_reader = BufReader::new(File::open(Path::new("./build/cmudict.dict"))?);
     dict_reader.read_to_string(&mut dict_file_contents)?;
 
     for line in dict_file_contents.lines() {
@@ -24,8 +24,25 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     {
-        let mut file = File::create(Path::new("ser.bin")).unwrap();
+        let mut file = File::create(Path::new("./build/ser.bin")).unwrap();
         file.write_all(&serialize(&dict)?)?;
     }
+
+    // Read wav_files into memory and output a binary containing
+    // all of them as a single file to compile be included
+    let mut wav_files: HashMap<String, Vec<u8>> = HashMap::new();
+    for entry in fs::read_dir("./audio")? {
+        let entry = entry?;
+        let path = entry.path();
+        wav_files.insert(
+            String::from(entry.file_name().to_string_lossy()),
+            std::fs::read(&entry.path())?,
+        );
+    }
+    {
+        let mut file = File::create(Path::new("./build/wavs.bin")).unwrap();
+        file.write_all(&serialize(&wav_files)?)?;
+    }
+
     Ok(())
 }
