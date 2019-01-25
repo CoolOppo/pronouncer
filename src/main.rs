@@ -1,71 +1,17 @@
-extern crate azul;
 extern crate bincode;
 extern crate serde_derive;
 
-use azul::{
-    prelude::*,
-    widgets::{button::Button, text_input::*},
-};
 use bincode::deserialize;
 use hashbrown::HashMap;
 use hound::{SampleFormat, WavReader, WavSpec};
+use std::env;
 use std::error::Error;
 use std::io::BufReader;
 use std::process::Command;
 
-struct DataModel {
-    text_input: TextInputState,
-}
-
-impl Layout for DataModel {
-    fn layout(&self, info: WindowInfo<Self>) -> Dom<Self> {
-        let text_input = TextInput::new()
-            .bind(info.window, &self.text_input, &self)
-            .dom(&self.text_input)
-            .with_class("text")
-            .with_css_override("textHeight", CssProperty::Height(LayoutHeight::px(700.0)));
-        let button = Button::with_label("Generate and play WAV")
-            .dom()
-            .with_callback(On::MouseUp, Callback(on_click));
-
-        Dom::new(NodeType::Div)
-            .with_child(text_input)
-            .with_child(button)
-    }
-}
-
-impl Default for DataModel {
-    fn default() -> Self {
-        Self {
-            text_input: TextInputState::new("Hover here to type..."),
-        }
-    }
-}
-
-// View updates Model
-fn on_click(app_state: &mut AppState<DataModel>, _event: WindowEvent<DataModel>) -> UpdateScreen {
-    app_state.data.modify(|state| {
-        generate_wav(
-            state
-                .text_input
-                .text
-                .split(' ')
-                .map(|x| String::from(x))
-                .collect(),
-        )
-        .unwrap()
-    });
-    Redraw
-}
-
 fn main() -> Result<(), Box<dyn Error>> {
-    let app = App::new(DataModel::default(), AppConfig::default());
-    app.run(Window::new(WindowCreateOptions::default(), css::native()).unwrap())
-        .unwrap();
-    Ok(())
-}
-
-fn generate_wav(words: Vec<String>) -> Result<(), Box<dyn Error>> {
+    let args: Vec<String> = env::args().collect();
+    let words = &args[1..];
     let dict: HashMap<String, Vec<String>> =
         deserialize(include_bytes!("../build/ser.bin")).unwrap();
     let wav_files = {
