@@ -11,7 +11,6 @@ use std::io::BufReader;
 use std::io::Write;
 use std::path::Path;
 use std::process::Command;
-
 fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = env::args().collect();
     let words = &args[1..];
@@ -94,21 +93,27 @@ fn main() -> Result<(), Box<dyn Error>> {
             }
         }
     }
-    let concat_file_path = Path::new("ffmpeg-concat-list.txt");
+    let concat_file_path = std::env::temp_dir().join(Path::new("ffmpeg-concat-list.txt"));
     {
-        let mut file = File::create(concat_file_path).unwrap();
+        let mut file = File::create(&concat_file_path).unwrap();
         file.write_all(format!("{}", concat_file).as_bytes())
             .unwrap();
     }
     Command::new("cmd")
-        .args(&["/C", "ffmpeg -f concat -i mylist.txt -c copy -y output.wav"])
+        .args(&[
+            "/C",
+            &format!(
+                "ffmpeg -f concat -i {} -c copy -y output.wav",
+                concat_file_path.to_string_lossy()
+            ),
+        ])
         .output()
         .unwrap_or_else(|_| panic!("Failed to execute ffmpeg"));
+    std::fs::remove_file(concat_file_path)?;
     Command::new("cmd")
         .args(&["/C", "ffplay output.wav"])
         .output()
         .unwrap_or_else(|_| panic!("Failed to execute ffplay"));
-    std::fs::remove_file(concat_file_path)?;
 
     Ok(())
 }

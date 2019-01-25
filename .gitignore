@@ -1,2 +1,4 @@
 /target
 **/*.rs.bk
+ser.bin
+output.wav
