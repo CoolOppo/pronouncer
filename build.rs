@@ -7,6 +7,9 @@ use std::io::BufReader;
 use std::io::Write;
 use std::path::Path;
 fn main() -> Result<(), Box<dyn Error>> {
+    println!("cargo:rerun-if-changed=build.rs");
+    println!("cargo:rerun-if-changed=Cargo.lock");
+    println!("cargo:rerun-if-changed=build/cmudict.dict");
     let mut dict: HashMap<String, Vec<String>> = HashMap::new();
     let mut dict_file_contents = String::new();
     let mut dict_reader = BufReader::new(File::open(Path::new("./build/cmudict.dict"))?);
