@@ -16,5 +16,6 @@ hashbrown = {version = "0.1", features=["nightly", "serde"]}
 serde = "1.0.85"
 serde_derive = "1.0.85"
 hound = "3.4.0"
+rodio = "0.8.1"
 [profile.release]
 lto = 'thin'
