@@ -44,7 +44,7 @@ lazy_static! {
 // let c_str = unsafe { CStr::from_ptr(string).to_string_lossy().to_owned() };
 // println!("{}", c_str);
 
-pub fn run(words: Vec<String>) -> Result<(), Box<dyn Error>> {
+pub fn run(words: Vec<&str>) -> Result<(), Box<dyn Error>> {
     let mut output_wav = hound::WavWriter::create(
         "output.wav",
         WavSpec {
@@ -120,8 +120,9 @@ pub fn run(words: Vec<String>) -> Result<(), Box<dyn Error>> {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
     #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
+    fn make_wav() {
+        run(vec!("This is a test")).unwrap();
     }
 }

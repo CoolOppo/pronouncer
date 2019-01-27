@@ -16,7 +16,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             .map(|s| String::from(s))
             .collect();
     }
-    pronouncer_lib::run(words)?;
+    pronouncer_lib::run(words.iter().map(|s| s.as_str()).collect())?;
     if cfg!(target_os = "windows") {
         let out = Command::new("cmd")
             .args(&["/C", "start output.wav"])

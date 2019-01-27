@@ -17,5 +17,3 @@ libc = "0.2.48"
 serde = "1.0.85"
 serde_derive = "1.0.85"
 hound = "3.4.0"
-[profile.release]
-lto = 'thin'

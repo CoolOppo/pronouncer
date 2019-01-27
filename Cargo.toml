@@ -4,3 +4,5 @@ members = [
     "pronouncer_bin",
     "pronouncer_lib",
 ]
+[profile.release]
+lto = 'thin'
