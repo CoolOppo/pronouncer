@@ -1,4 +1,5 @@
-/target
+pronouncer_bin/target
+pronouncer_lib/target
+**/target/
 **/*.rs.bk
-build/*.bin
 output.wav

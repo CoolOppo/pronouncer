@@ -2,19 +2,26 @@
 extern crate serde_derive;
 use bincode::serialize;
 use hashbrown::HashMap;
+use std::env;
 use std::error::Error;
 use std::fs::{self, File};
 use std::io::prelude::*;
 use std::io::BufReader;
 use std::io::Write;
 use std::path::Path;
-
 include!("./src/phoneme.rs");
 
 fn main() -> Result<(), Box<dyn Error>> {
-    println!("cargo:rerun-if-changed=build.rs");
-    println!("cargo:rerun-if-changed=Cargo.lock");
-    println!("cargo:rerun-if-changed=build/cmudict.dict");
+    println!("cargo:rerun-if-changed=./pronouncer-lib/build.rs");
+    println!("cargo:rerun-if-changed=./pronouncer-lib/Cargo.lock");
+    println!("cargo:rerun-if-changed=./pronouncer-lib/build/cmudict.dict");
+    let linkage = env::var("CARGO_CFG_TARGET_FEATURE").unwrap_or(String::new());
+    if linkage.contains("crt-static") {
+        println!("the C runtime will be statically linked");
+    } else {
+        println!("the C runtime will be dynamically linked");
+    }
+
     let mut dict: HashMap<String, Vec<Phoneme>> = HashMap::new();
     let mut dict_file_contents = String::new();
     let mut dict_reader = BufReader::new(File::open(Path::new("./build/cmudict.dict"))?);
