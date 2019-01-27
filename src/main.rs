@@ -1,6 +1,9 @@
 extern crate bincode;
+#[macro_use]
 extern crate serde_derive;
 
+mod phoneme;
+use crate::phoneme::Phoneme;
 use bincode::deserialize;
 use hashbrown::HashMap;
 use hound::{SampleFormat, WavReader, WavSpec};
@@ -23,7 +26,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             .collect();
     }
 
-    let dict: HashMap<String, Vec<String>> =
+    let dict: HashMap<String, Vec<Phoneme>> =
         deserialize(include_bytes!("../build/ser.bin")).unwrap();
     let wav_files = {
         let wav_files: HashMap<String, Vec<u8>> =
@@ -53,54 +56,56 @@ fn main() -> Result<(), Box<dyn Error>> {
         let word: String = word
             .to_lowercase()
             .chars()
-            .filter(|&c| !"'.-".contains(c))
+            .filter(|&c| match c {
+                'a'...'z' | 'A'...'Z' => true,
+                _ => false,
+            })
             .collect();
         let symbols = dict
             .get(&word)
             .unwrap_or_else(|| panic!("Could not find \"{}\" in dictionary.", word));
 
         for symbol in symbols.iter() {
-            for sample in match symbol.as_str() {
-                "AA" => wav_files.get("AA.wav").unwrap(),
-                "AE" => wav_files.get("AE.wav").unwrap(),
-                "AH" => wav_files.get("AH.wav").unwrap(),
-                "AO" => wav_files.get("AO.wav").unwrap(),
-                "AW" => wav_files.get("AW.wav").unwrap(),
-                "AY" => wav_files.get("AY.wav").unwrap(),
-                "B" => wav_files.get("B.wav").unwrap(),
-                "CH" => wav_files.get("CH.wav").unwrap(),
-                "D" => wav_files.get("D.wav").unwrap(),
-                "DH" => wav_files.get("DH.wav").unwrap(),
-                "EH" => wav_files.get("EH.wav").unwrap(),
-                "ER" => wav_files.get("ER.wav").unwrap(),
-                "EY" => wav_files.get("EY.wav").unwrap(),
-                "F" => wav_files.get("F.wav").unwrap(),
-                "G" => wav_files.get("G.wav").unwrap(),
-                "HH" => wav_files.get("HH.wav").unwrap(),
-                "IH" => wav_files.get("IH.wav").unwrap(),
-                "IY" => wav_files.get("IY.wav").unwrap(),
-                "JH" => wav_files.get("JH.wav").unwrap(),
-                "K" => wav_files.get("K.wav").unwrap(),
-                "L" => wav_files.get("L.wav").unwrap(),
-                "M" => wav_files.get("M.wav").unwrap(),
-                "N" => wav_files.get("N.wav").unwrap(),
-                "NG" => wav_files.get("NG.wav").unwrap(),
-                "OW" => wav_files.get("OW.wav").unwrap(),
-                "OY" => wav_files.get("OY.wav").unwrap(),
-                "P" => wav_files.get("P.wav").unwrap(),
-                "R" => wav_files.get("R.wav").unwrap(),
-                "S" => wav_files.get("S.wav").unwrap(),
-                "SH" => wav_files.get("SH.wav").unwrap(),
-                "T" => wav_files.get("T.wav").unwrap(),
-                "TH" => wav_files.get("TH.wav").unwrap(),
-                "UH" => wav_files.get("UH.wav").unwrap(),
-                "UW" => wav_files.get("UW.wav").unwrap(),
-                "V" => wav_files.get("V.wav").unwrap(),
-                "W" => wav_files.get("W.wav").unwrap(),
-                "Y" => wav_files.get("Y.wav").unwrap(),
-                "Z" => wav_files.get("Z.wav").unwrap(),
-                "ZH" => wav_files.get("ZH.wav").unwrap(),
-                &_ => panic!(),
+            for sample in match symbol {
+                Phoneme::AA => wav_files.get("AA.wav").unwrap(),
+                Phoneme::AE => wav_files.get("AE.wav").unwrap(),
+                Phoneme::AH => wav_files.get("AH.wav").unwrap(),
+                Phoneme::AO => wav_files.get("AO.wav").unwrap(),
+                Phoneme::AW => wav_files.get("AW.wav").unwrap(),
+                Phoneme::AY => wav_files.get("AY.wav").unwrap(),
+                Phoneme::B => wav_files.get("B.wav").unwrap(),
+                Phoneme::CH => wav_files.get("CH.wav").unwrap(),
+                Phoneme::D => wav_files.get("D.wav").unwrap(),
+                Phoneme::DH => wav_files.get("DH.wav").unwrap(),
+                Phoneme::EH => wav_files.get("EH.wav").unwrap(),
+                Phoneme::ER => wav_files.get("ER.wav").unwrap(),
+                Phoneme::EY => wav_files.get("EY.wav").unwrap(),
+                Phoneme::F => wav_files.get("F.wav").unwrap(),
+                Phoneme::G => wav_files.get("G.wav").unwrap(),
+                Phoneme::HH => wav_files.get("HH.wav").unwrap(),
+                Phoneme::IH => wav_files.get("IH.wav").unwrap(),
+                Phoneme::IY => wav_files.get("IY.wav").unwrap(),
+                Phoneme::JH => wav_files.get("JH.wav").unwrap(),
+                Phoneme::K => wav_files.get("K.wav").unwrap(),
+                Phoneme::L => wav_files.get("L.wav").unwrap(),
+                Phoneme::M => wav_files.get("M.wav").unwrap(),
+                Phoneme::N => wav_files.get("N.wav").unwrap(),
+                Phoneme::NG => wav_files.get("NG.wav").unwrap(),
+                Phoneme::OW => wav_files.get("OW.wav").unwrap(),
+                Phoneme::OY => wav_files.get("OY.wav").unwrap(),
+                Phoneme::P => wav_files.get("P.wav").unwrap(),
+                Phoneme::R => wav_files.get("R.wav").unwrap(),
+                Phoneme::S => wav_files.get("S.wav").unwrap(),
+                Phoneme::SH => wav_files.get("SH.wav").unwrap(),
+                Phoneme::T => wav_files.get("T.wav").unwrap(),
+                Phoneme::TH => wav_files.get("TH.wav").unwrap(),
+                Phoneme::UH => wav_files.get("UH.wav").unwrap(),
+                Phoneme::UW => wav_files.get("UW.wav").unwrap(),
+                Phoneme::V => wav_files.get("V.wav").unwrap(),
+                Phoneme::W => wav_files.get("W.wav").unwrap(),
+                Phoneme::Y => wav_files.get("Y.wav").unwrap(),
+                Phoneme::Z => wav_files.get("Z.wav").unwrap(),
+                Phoneme::ZH => wav_files.get("ZH.wav").unwrap(),
             } {
                 output_wav.write_sample(*sample)?;
             }

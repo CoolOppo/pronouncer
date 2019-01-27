@@ -1,3 +1,5 @@
+#[macro_use]
+extern crate serde_derive;
 use bincode::serialize;
 use hashbrown::HashMap;
 use std::error::Error;
@@ -6,11 +8,14 @@ use std::io::prelude::*;
 use std::io::BufReader;
 use std::io::Write;
 use std::path::Path;
+
+include!("./src/phoneme.rs");
+
 fn main() -> Result<(), Box<dyn Error>> {
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=Cargo.lock");
     println!("cargo:rerun-if-changed=build/cmudict.dict");
-    let mut dict: HashMap<String, Vec<String>> = HashMap::new();
+    let mut dict: HashMap<String, Vec<Phoneme>> = HashMap::new();
     let mut dict_file_contents = String::new();
     let mut dict_reader = BufReader::new(File::open(Path::new("./build/cmudict.dict"))?);
     dict_reader.read_to_string(&mut dict_file_contents)?;
@@ -18,19 +23,29 @@ fn main() -> Result<(), Box<dyn Error>> {
     for line in dict_file_contents.lines() {
         let line_split: Vec<&str> = line.split(" ").collect();
         let word = line_split[0];
-        let phones: Vec<String> = line_split[1..]
+        let phones: Vec<Phoneme> = line_split[1..]
             .iter()
             .map(|s| {
                 s.chars()
-                    .filter(|&c| !"0123456789'.-".contains(c))
+                    .filter(|&c| match c {
+                        'A'...'Z' => true,
+                        _ => false,
+                    })
                     .collect()
             })
+            .collect::<Vec<String>>()
+            .iter()
+            .filter(|s| !s.is_empty())
+            .map(|s| get_phoneme(&s))
             .collect();
 
         dict.insert(
             word.to_string()
                 .chars()
-                .filter(|&c| !"'.-".contains(c))
+                .filter(|&c| match c {
+                    'a'...'z' | 'A'...'Z' => true,
+                    _ => false,
+                })
                 .collect(),
             phones,
         );
