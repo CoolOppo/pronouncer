@@ -45,9 +45,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                     })
                     .collect()
             })
-            .collect::<Vec<String>>()
-            .iter()
-            .filter(|s| !s.is_empty())
+            .filter(|s: &String| !s.is_empty())
             .map(|s| get_phoneme(&s))
             .collect();
 
