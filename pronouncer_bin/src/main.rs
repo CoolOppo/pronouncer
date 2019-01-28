@@ -15,7 +15,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         io::stdin().read_line(&mut read_words)?;
         words = read_words
             .split_whitespace()
-            .map(|s| String::from(s))
+            .map(String::from)
             .collect();
     }
     pronouncer_lib::run(words.iter().map(|s| s.as_str()).collect())?;
