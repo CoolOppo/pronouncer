@@ -61,7 +61,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     {
-        let mut file = File::create(Path::new("./build/ser.bin")).unwrap();
+        let mut file = File::create(Path::new("./build/dict_serialized.bin")).unwrap();
         file.write_all(&serialize(&dict)?)?;
     }
 

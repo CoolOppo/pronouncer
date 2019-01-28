@@ -14,7 +14,7 @@ use std::io::BufReader;
 include!("phoneme.rs");
 lazy_static! {
     static ref DICT: HashMap<String, Vec<Phoneme>> =
-        deserialize(include_bytes!("../build/ser.bin")).unwrap();
+        deserialize(include_bytes!("../build/dict_serialized.bin")).unwrap();
     static ref WAV_FILES: HashMap<String, Vec<i16>> = {
         let files: HashMap<String, Vec<u8>> =
             deserialize(include_bytes!("../build/wavs.bin")).unwrap();
