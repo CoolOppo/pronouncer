@@ -6,13 +6,13 @@ edition = "2018"
 
 [build-dependencies]
 bincode = "1.0.1"
-hashbrown = {version = "0.1", features=["nightly", "serde"]}
+hashbrown = {version = "0.1", features=["serde"]}
 hound = "3.4.0"
 serde = "1.0.85"
 serde_derive = "1.0.85"
 [dependencies]
 bincode = "1.0.1"
-hashbrown = {version = "0.1", features=["nightly", "serde"]}
+hashbrown = {version = "0.1", features=["serde"]}
 lazy_static = "*"
 libc = "0.2.48"
 serde = "1.0.85"

@@ -13,7 +13,7 @@ use std::path::Path;
 
 use bincode::serialize;
 use hashbrown::HashMap;
-use hound::{WavReader, WavSpec};
+use hound::WavReader;
 
 include!("./src/phoneme.rs");
 
@@ -41,7 +41,7 @@ fn main() -> Result<(), Box<dyn Error>> {
             .map(|s| {
                 s.chars()
                     .filter(|&c| match c {
-                        'A'...'Z' => true,
+                        'A'...'Z' | '\'' => true,
                         _ => false,
                     })
                     .collect()

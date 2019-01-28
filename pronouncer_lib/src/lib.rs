@@ -56,7 +56,7 @@ pub fn words_to_wav(words: Vec<&str>) -> Result<Vec<u8>, Box<dyn Error>> {
             .to_lowercase()
             .chars()
             .filter(|&c| match c {
-                'a'...'z' | 'A'...'Z' => true,
+                'a'...'z' | 'A'...'Z' | '\'' => true,
                 _ => false,
             })
             .collect();
@@ -78,9 +78,8 @@ pub fn words_to_wav(words: Vec<&str>) -> Result<Vec<u8>, Box<dyn Error>> {
 #[cfg(test)]
 mod tests {
     use super::*;
-
     #[test]
     fn make_wav() {
-        words_to_wav(vec!["This is a test"]).unwrap();
+        words_to_wav("This is a test".split_whitespace().collect()).unwrap();
     }
 }
