@@ -1,5 +1,6 @@
 pronouncer_bin/target
 pronouncer_lib/target
+pronouncer_lib/build/*.bin
 **/target/
 **/*.rs.bk
 output.wav
