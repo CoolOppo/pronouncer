@@ -4,3 +4,4 @@ pronouncer_lib/build/*.bin
 **/target/
 **/*.rs.bk
 output.wav
+.idea/
