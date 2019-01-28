@@ -2,15 +2,18 @@
 
 #[macro_use]
 extern crate serde_derive;
-use bincode::serialize;
-use hashbrown::HashMap;
+
 use std::env;
 use std::error::Error;
 use std::fs::{self, File};
-use std::io::prelude::*;
 use std::io::BufReader;
+use std::io::prelude::*;
 use std::io::Write;
 use std::path::Path;
+
+use bincode::serialize;
+use hashbrown::HashMap;
+
 include!("./src/phoneme.rs");
 
 fn main() -> Result<(), Box<dyn Error>> {

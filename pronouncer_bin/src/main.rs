@@ -1,11 +1,14 @@
 #![warn(clippy::all)]
 
 extern crate bincode;
-use pronouncer_lib;
+
 use std::env;
 use std::error::Error;
 use std::io;
 use std::process::Command;
+
+use pronouncer_lib;
+
 fn main() -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = env::args().collect();
     let mut words: Vec<String> = args[1..].to_vec();

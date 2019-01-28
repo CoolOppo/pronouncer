@@ -2,15 +2,19 @@
 
 extern crate bincode;
 #[macro_use]
-extern crate serde_derive;
-#[macro_use]
 extern crate lazy_static;
+#[macro_use]
+extern crate serde_derive;
+
+use std::error::Error;
+use std::io::BufReader;
+
 use bincode::deserialize;
 use hashbrown::HashMap;
 use hound::{SampleFormat, WavReader, WavSpec};
-use std::error::Error;
+
 mod phoneme;
-use std::io::BufReader;
+
 include!("phoneme.rs");
 lazy_static! {
     static ref DICT: HashMap<String, Vec<Phoneme>> =
@@ -123,6 +127,7 @@ pub fn run(words: Vec<&str>) -> Result<(), Box<dyn Error>> {
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[test]
     fn make_wav() {
         run(vec!["This is a test"]).unwrap();
