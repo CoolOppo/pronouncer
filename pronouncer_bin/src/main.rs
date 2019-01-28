@@ -4,7 +4,10 @@ extern crate bincode;
 
 use std::env;
 use std::error::Error;
+use std::fs::File;
 use std::io;
+use std::io::Write;
+use std::path::Path;
 use std::process::Command;
 
 use pronouncer_lib;
@@ -18,7 +21,12 @@ fn main() -> Result<(), Box<dyn Error>> {
         io::stdin().read_line(&mut read_words)?;
         words = read_words.split_whitespace().map(String::from).collect();
     }
-    pronouncer_lib::run(words.iter().map(|s| s.as_str()).collect())?;
+
+    let wav_bytes = pronouncer_lib::words_to_wav(words.iter().map(|s| s.as_str()).collect())?;
+    let output_path = Path::new("output.wav");
+    let mut output_file = File::create(&output_path)?;
+    output_file.write_all(&wav_bytes)?;
+
     if cfg!(target_os = "windows") {
         let out = Command::new("ffplay")
             .arg("output.wav")

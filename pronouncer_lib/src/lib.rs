@@ -7,6 +7,8 @@ extern crate lazy_static;
 extern crate serde_derive;
 
 use std::error::Error;
+use std::io::BufWriter;
+use std::io::Cursor;
 
 use bincode::deserialize;
 use hashbrown::HashMap;
@@ -37,9 +39,11 @@ lazy_static! {
 // let c_str = unsafe { CStr::from_ptr(string).to_string_lossy().to_owned() };
 // println!("{}", c_str);
 
-pub fn run(words: Vec<&str>) -> Result<(), Box<dyn Error>> {
-    let mut output_wav = hound::WavWriter::create(
-        "output.wav",
+pub fn words_to_wav(words: Vec<&str>) -> Result<Vec<u8>, Box<dyn Error>> {
+    let mut output = Vec::new();
+    let writer = BufWriter::new(Cursor::new(&mut output));
+    let mut output_wav = hound::WavWriter::new(
+        writer,
         WavSpec {
             channels: 1,
             sample_rate: 44100,
@@ -68,7 +72,7 @@ pub fn run(words: Vec<&str>) -> Result<(), Box<dyn Error>> {
     }
     output_wav.finalize()?;
 
-    Ok(())
+    Ok(output)
 }
 
 #[cfg(test)]
@@ -77,6 +81,6 @@ mod tests {
 
     #[test]
     fn make_wav() {
-        run(vec!["This is a test"]).unwrap();
+        words_to_wav(vec!["This is a test"]).unwrap();
     }
 }
