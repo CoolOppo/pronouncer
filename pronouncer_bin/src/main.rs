@@ -17,8 +17,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
     pronouncer_lib::run(words.iter().map(|s| s.as_str()).collect())?;
     if cfg!(target_os = "windows") {
-        let out = Command::new("cmd")
-            .args(&["/C", "start output.wav"])
+        let out = Command::new("ffplay")
+            .arg("output.wav")
             .output()
             .unwrap_or_else(|_| panic!("Failed to open output.wav"));
         if !out.stderr.is_empty() {
