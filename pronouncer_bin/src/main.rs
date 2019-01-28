@@ -13,10 +13,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         let mut read_words = String::new();
         println!("Enter a string: ");
         io::stdin().read_line(&mut read_words)?;
-        words = read_words
-            .split_whitespace()
-            .map(String::from)
-            .collect();
+        words = read_words.split_whitespace().map(String::from).collect();
     }
     pronouncer_lib::run(words.iter().map(|s| s.as_str()).collect())?;
     if cfg!(target_os = "windows") {

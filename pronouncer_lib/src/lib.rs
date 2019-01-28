@@ -125,6 +125,6 @@ mod tests {
     use super::*;
     #[test]
     fn make_wav() {
-        run(vec!("This is a test")).unwrap();
+        run(vec!["This is a test"]).unwrap();
     }
 }
