@@ -6,8 +6,8 @@ extern crate serde_derive;
 use std::env;
 use std::error::Error;
 use std::fs::{self, File};
+use std::io::BufRead;
 use std::io::BufReader;
-use std::io::Read;
 use std::io::Write;
 use std::path::Path;
 
@@ -29,37 +29,46 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     let mut dict: HashMap<String, Vec<Phoneme>> = HashMap::new();
-    let mut dict_file_contents = String::new();
     let mut dict_reader = BufReader::new(File::open(Path::new("./build/cmudict.dict"))?);
-    dict_reader.read_to_string(&mut dict_file_contents)?;
 
-    for line in dict_file_contents.lines() {
-        let line_split: Vec<&str> = line.split(" ").collect();
-        let word = line_split[0];
-        let phones: Vec<Phoneme> = line_split[1..]
-            .iter()
-            .map(|s| {
-                s.chars()
-                    .filter(|&c| match c {
-                        'A'...'Z' | '\'' => true,
-                        _ => false,
+    loop {
+        let mut line = String::new();
+        let r = dict_reader.read_line(&mut line);
+        match r {
+            Ok(0) => break,
+            Ok(_) => {
+                let line_split: Vec<&str> = line.trim_end().split(" ").collect();
+                let word = line_split[0];
+                let phones: Vec<Phoneme> = line_split[1..]
+                    .iter()
+                    .map(|s| {
+                        s.chars()
+                            .filter(|&c| match c {
+                                'A'...'Z' | '\'' => true,
+                                _ => false,
+                            })
+                            .collect()
                     })
-                    .collect()
-            })
-            .filter(|s: &String| !s.is_empty())
-            .map(|s| get_phoneme(&s))
-            .collect();
+                    .filter(|s: &String| !s.is_empty())
+                    .map(|s| get_phoneme(&s))
+                    .collect();
 
-        dict.insert(
-            word.to_string()
-                .chars()
-                .filter(|&c| match c {
-                    'a'...'z' | 'A'...'Z' => true,
-                    _ => false,
-                })
-                .collect(),
-            phones,
-        );
+                dict.insert(
+                    word.to_string()
+                        .chars()
+                        .filter(|&c| match c {
+                            'a'...'z' | 'A'...'Z' => true,
+                            _ => false,
+                        })
+                        .collect(),
+                    phones,
+                );
+            }
+            Err(err) => {
+                println!("{}", err);
+                break;
+            }
+        };
     }
 
     {

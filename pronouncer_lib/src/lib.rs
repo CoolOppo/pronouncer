@@ -77,7 +77,7 @@ pub fn words_to_wav(words: Vec<&str>) -> Result<Vec<u8>, Box<dyn Error>> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use super::words_to_wav;
     #[test]
     fn make_wav() {
         words_to_wav("This is a test".split_whitespace().collect()).unwrap();
