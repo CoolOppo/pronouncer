@@ -14,9 +14,9 @@ use std::path::Path;
 include!("./src/phoneme.rs");
 
 fn main() -> Result<(), Box<dyn Error>> {
-    println!("cargo:rerun-if-changed=./pronouncer-lib/build.rs");
-    println!("cargo:rerun-if-changed=./pronouncer-lib/Cargo.lock");
-    println!("cargo:rerun-if-changed=./pronouncer-lib/build/cmudict.dict");
+    println!("cargo:rerun-if-changed=./pronouncer_lib/build.rs");
+    println!("cargo:rerun-if-changed=./pronouncer_lib/Cargo.lock");
+    println!("cargo:rerun-if-changed=./pronouncer_lib/build/cmudict.dict");
     let linkage = env::var("CARGO_CFG_TARGET_FEATURE").unwrap_or(String::new());
     if linkage.contains("crt-static") {
         println!("the C runtime will be statically linked");
