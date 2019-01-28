@@ -1,3 +1,5 @@
+#![warn(clippy::all)]
+
 extern crate bincode;
 use pronouncer_lib;
 use std::env;

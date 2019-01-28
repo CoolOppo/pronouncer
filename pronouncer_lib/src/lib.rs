@@ -1,3 +1,5 @@
+#![warn(clippy::all)]
+
 extern crate bincode;
 #[macro_use]
 extern crate serde_derive;
