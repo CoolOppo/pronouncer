@@ -57,7 +57,7 @@ fn main() -> Result<(), Box<dyn Error>> {
                     word.to_string()
                         .chars()
                         .filter(|&c| match c {
-                            'a'...'z' | 'A'...'Z' => true,
+                            'a'...'z' | 'A'...'Z' | '\'' => true,
                             _ => false,
                         })
                         .collect(),
