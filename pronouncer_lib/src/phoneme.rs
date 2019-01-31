@@ -1,4 +1,4 @@
-#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash)]
+#[derive(Serialize, Deserialize, Debug, PartialEq, Eq, Hash, Clone)]
 pub enum Phoneme {
     AA,
     AE,

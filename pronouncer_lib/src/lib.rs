@@ -56,13 +56,18 @@ pub fn words_to_wav(words: Vec<&str>) -> Result<Vec<u8>, Box<dyn Error>> {
             .to_lowercase()
             .chars()
             .filter(|&c| match c {
-                'a'...'z' | 'A'...'Z' | '\'' => true,
+                'a'...'z' | '\'' => true,
                 _ => false,
             })
             .collect();
-        let symbols = DICT
-            .get(&word)
-            .unwrap_or_else(|| panic!("Could not find \"{}\" in dictionary.", word));
+        let symbols: Vec<Phoneme> = match DICT.get(&word) {
+            Some(x) => x.to_vec(),
+            None => word
+                .chars()
+                .flat_map(|c| DICT.get(&c.to_string()).unwrap())
+                .cloned()
+                .collect(),
+        };
 
         for symbol in symbols.iter() {
             for sample in WAV_FILES.get(symbol).unwrap() {
