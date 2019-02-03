@@ -15,8 +15,8 @@ use hashbrown::HashMap;
 use hound::{SampleFormat, WavSpec};
 
 mod phoneme;
+use phoneme::Phoneme;
 
-include!("phoneme.rs");
 lazy_static! {
     static ref DICT: HashMap<String, Vec<Phoneme>> =
         deserialize(include_bytes!("../build/dict_serialized.bin")).unwrap();
