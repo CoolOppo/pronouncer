@@ -83,9 +83,39 @@ pub fn words_to_wav(words: Vec<&str>) -> Result<Vec<u8>, Box<dyn Error>> {
     Ok(output)
 }
 
+fn crossfade(first_clip: &Vec<i16>, second_clip: &Vec<i16>) -> Vec<i16> {
+    let fade_len = (first_clip.len() + second_clip.len()) / 6;
+    let mut output_clip = Vec::new();
+    let first_clip_end = first_clip.len() - 1;
+    let fade_start = first_clip_end - fade_len;
+    let second_clip_start_after_fade = fade_len - 1;
+
+    // Write all of the first clip up to the point where we start the crossfade into the output
+    for i in 0..fade_start {
+        output_clip.push(first_clip[i]);
+    }
+
+    // Fade out first clip while fading in second
+    for i in fade_start..=first_clip_end {
+        let fade_mult = (i - fade_start) as f64 / (first_clip_end - fade_start) as f64;
+        let out_sample: i16 = (((1 as f64 - fade_mult) * first_clip[i] as f64)
+            + (fade_mult * second_clip[i - fade_start] as f64))
+            as i16;
+        output_clip.push(out_sample);
+    }
+
+    // Write rest of second clip
+    for i in second_clip_start_after_fade..second_clip.len() {
+        output_clip.push(second_clip[i]);
+    }
+
+    output_clip
+}
+
 #[cfg(test)]
 mod tests {
     use super::words_to_wav;
+
     #[test]
     fn make_wav() {
         words_to_wav("This is a test".split_whitespace().collect()).unwrap();
