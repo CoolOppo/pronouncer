@@ -18,10 +18,13 @@ mod phoneme;
 use phoneme::Phoneme;
 
 lazy_static! {
-    static ref DICT: HashMap<String, Vec<Phoneme>> =
-        deserialize(include_bytes!("../build/dict_serialized.bin")).unwrap();
+    static ref DICT: HashMap<String, Vec<Phoneme>> = deserialize(include_bytes!(concat!(
+        env!("OUT_DIR"),
+        "/dict_serialized.bin"
+    )))
+    .unwrap();
     static ref WAV_FILES: HashMap<Phoneme, Vec<i16>> =
-        deserialize(include_bytes!("../build/wavs.bin")).unwrap();
+        deserialize(include_bytes!(concat!(env!("OUT_DIR"), "/wavs.bin"))).unwrap();
 }
 
 // temporarily keeping this here

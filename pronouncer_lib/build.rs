@@ -21,6 +21,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     println!("cargo:rerun-if-changed=./pronouncer_lib/build.rs");
     println!("cargo:rerun-if-changed=./pronouncer_lib/Cargo.lock");
     println!("cargo:rerun-if-changed=./pronouncer_lib/build/cmudict.dict");
+    let out_dir = env::var("OUT_DIR")?;
+    let dest_dir = Path::new(&out_dir);
     let linkage = env::var("CARGO_CFG_TARGET_FEATURE").unwrap_or(String::new());
     if linkage.contains("crt-static") {
         println!("the C runtime will be statically linked");
@@ -72,7 +74,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     {
-        let mut file = File::create(Path::new("./build/dict_serialized.bin")).unwrap();
+        let mut file = File::create(dest_dir.join("dict_serialized.bin")).unwrap();
         file.write_all(&serialize(&dict)?)?;
     }
 
@@ -91,7 +93,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         );
     }
     {
-        let mut file = File::create(Path::new("./build/wavs.bin")).unwrap();
+        let mut file = File::create(dest_dir.join("wavs.bin")).unwrap();
         file.write_all(&serialize(&wav_files)?)?;
     }
 
