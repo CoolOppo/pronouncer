@@ -105,6 +105,9 @@ pub fn words_to_wav(words: Vec<&str>) -> Result<Vec<u8>, Box<dyn Error>> {
 
 fn crossfade(first_clip: &[i16], second_clip: &[i16]) -> Vec<i16> {
     let fade_len = (first_clip.len() - 1).min(second_clip.len() - 1) / 2;
+    // let fade_len = (44100 / 10).min(first_clip.len() - 1).min(second_clip.len() -
+    // 1);
+
     let mut output_clip = Vec::new();
     let first_clip_end = first_clip.len() - 1;
     let fade_start = first_clip_end - (fade_len - 1);
@@ -132,6 +135,25 @@ fn crossfade(first_clip: &[i16], second_clip: &[i16]) -> Vec<i16> {
         output_clip.push(*sample);
     }
     output_clip
+}
+
+trait Clamp<T> {
+    fn clamp(self, min: T, max: T) -> T;
+}
+
+impl<T> Clamp<T> for T
+where
+    T: PartialOrd + Copy,
+{
+    fn clamp(self, min: T, max: T) -> T {
+        if self > max {
+            max
+        } else if self < min {
+            min
+        } else {
+            self
+        }
+    }
 }
 
 #[cfg(test)]
