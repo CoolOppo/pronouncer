@@ -3,13 +3,13 @@
 #[macro_use]
 extern crate serde_derive;
 
-use std::env;
-use std::error::Error;
-use std::fs::{self, File};
-use std::io::BufRead;
-use std::io::BufReader;
-use std::io::Write;
-use std::path::Path;
+use std::{
+    env,
+    error::Error,
+    fs::{self, File},
+    io::{BufRead, BufReader, Write},
+    path::Path,
+};
 
 use bincode::serialize;
 use hashbrown::HashMap;

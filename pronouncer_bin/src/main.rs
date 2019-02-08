@@ -2,12 +2,13 @@
 
 extern crate bincode;
 
-use std::env;
-use std::error::Error;
-use std::fs::File;
-use std::io;
-use std::io::Write;
-use std::path::Path;
+use std::{
+    env,
+    error::Error,
+    fs::File,
+    io::{self, Write},
+    path::Path,
+};
 
 use pronouncer_lib;
 
