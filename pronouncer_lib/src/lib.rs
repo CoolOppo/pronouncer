@@ -137,25 +137,6 @@ fn crossfade(first_clip: &[i16], second_clip: &[i16]) -> Vec<i16> {
     output_clip
 }
 
-trait Clamp<T> {
-    fn clamp(self, min: T, max: T) -> T;
-}
-
-impl<T> Clamp<T> for T
-where
-    T: PartialOrd + Copy,
-{
-    fn clamp(self, min: T, max: T) -> T {
-        if self > max {
-            max
-        } else if self < min {
-            min
-        } else {
-            self
-        }
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::words_to_wav;
