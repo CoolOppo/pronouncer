@@ -76,22 +76,12 @@ pub fn words_to_wav(words: Vec<&str>) -> Result<Vec<u8>, Box<dyn Error>> {
 
         let mut output_samples: Vec<i16> = Vec::new();
 
-        let mut symb_iter = symbols.iter();
-        while let Some(first_clip) = symb_iter.next() {
-            if let Some(second_clip) = symb_iter.next() {
-                let crossfaded = crossfade(
-                    WAV_FILES.get(first_clip).unwrap(),
-                    WAV_FILES.get(second_clip).unwrap(),
-                );
+        for sample in WAV_FILES.get(&symbols[0]).unwrap() {
+            output_samples.push(*sample);
+        }
 
-                for sample in crossfaded {
-                    output_samples.push(sample);
-                }
-            } else {
-                for sample in WAV_FILES.get(first_clip).unwrap() {
-                    output_samples.push(*sample);
-                }
-            }
+        for symbol in symbols.iter().skip(1) {
+            output_samples = crossfade(&output_samples, WAV_FILES.get(symbol).unwrap());
         }
 
         for sample in output_samples.iter() {
@@ -104,7 +94,7 @@ pub fn words_to_wav(words: Vec<&str>) -> Result<Vec<u8>, Box<dyn Error>> {
 }
 
 fn crossfade(first_clip: &[i16], second_clip: &[i16]) -> Vec<i16> {
-    let fade_len = ((first_clip.len() - 1).min(second_clip.len() - 1) as f64 / 1.5) as usize;
+    let fade_len = ((first_clip.len() - 1).min(second_clip.len() - 1) as f64 / 2.125) as usize;
     // let fade_len = (44100 / 10).min(first_clip.len() - 1).min(second_clip.len() -
     // 1);
 
