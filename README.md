@@ -106,15 +106,6 @@ Core dependencies:
 - `lazy_static`: Efficient static initialization
 - `serde`: Serialization framework
 
-## Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-Before contributing:
-1. Ensure all tests pass: `cargo test`
-2. Format code: `cargo fmt`
-3. Run clippy: `cargo clippy`
-
 ## License
 
 MIT
