@@ -23,12 +23,12 @@ cargo build --release
 
 Run the program with words as arguments:
 ```bash
-./target/release/pronouncer "hello world"
+cargo run --release -- "hello world"
 ```
 
 Or run it interactively:
 ```bash
-./target/release/pronouncer
+cargo run --release
 Enter a string: hello world
 ```
 
