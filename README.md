@@ -67,7 +67,7 @@ Command-line interface executable:
 3. **Audio Processing**
    - 44.1kHz 16-bit mono WAV output
    - Crossfading algorithm for smooth transitions
-   - Lazy loading of audio data via static compilation
+   - Fileless audio storage - phoneme WAV data is serialized and embedded directly into the binary
 
 4. **Dictionary System**
    - CMU dictionary-based word to phoneme conversion
@@ -78,9 +78,9 @@ Command-line interface executable:
 
 ### Build Process
 1. The build script (`build.rs`) processes the CMU dictionary and WAV files
-2. Dictionary is converted to a binary lookup table
-3. WAV files are serialized into the binary
-4. Lazy static initialization ensures efficient runtime loading
+2. Dictionary is converted to a binary lookup table using bincode serialization
+3. WAV files are serialized and embedded directly into the binary
+4. Static initialization provides immediate access to audio data at runtime
 
 ### Audio Synthesis Process
 1. Input text is normalized and split into words
@@ -91,9 +91,9 @@ Command-line interface executable:
 6. Final audio is written to WAV file
 
 ### Performance Considerations
-- Static compilation of audio data eliminates file I/O
-- Lazy loading prevents unnecessary memory usage
-- Efficient hashmap-based dictionary lookups
+- Audio data is compiled directly into the binary, eliminating runtime file I/O
+- Efficient bincode serialization for compact data storage
+- High-performance hashmap-based dictionary lookups
 - Optimized crossfading algorithm for smooth transitions
 
 ## Dependencies
