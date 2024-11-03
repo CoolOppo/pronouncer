@@ -1,14 +1,15 @@
 # Pronouncer
 
-A Rust-based text-to-speech synthesizer that uses the CMU phonetic dictionary and pre-recorded phonemes to generate speech.
+A Rust-based text-to-speech synthesizer that uses the CMU phonetic dictionary and pre-recorded phonemes to generate natural-sounding speech.
 
 ## Features
 
 - Text-to-speech synthesis using CMU phonetic dictionary
-- High-quality pre-recorded phonemes
-- Smooth audio transitions using crossfading
+- High-quality pre-recorded phonemes for natural sound
+- Smooth audio transitions using advanced crossfading
 - Support for both word and character-by-character pronunciation
-- Outputs standard WAV audio files
+- Outputs standard WAV audio files (44.1kHz, 16-bit)
+- Static compilation of audio data for standalone binaries
 
 ## Installation
 
@@ -36,24 +37,83 @@ The program will generate an `output.wav` file containing the synthesized speech
 
 ## Project Structure
 
-- `pronouncer_lib`: Core library containing the text-to-speech engine
-- `pronouncer_bin`: Command-line interface executable
-- `audio/`: Pre-recorded phoneme WAV files
-- `build/`: Build-time resources including the CMU dictionary
+The project is organized as a Rust workspace containing two main crates:
+
+### pronouncer_lib
+Core library containing the text-to-speech engine:
+- `src/lib.rs` - Main library interface and audio processing
+- `src/phoneme.rs` - Phoneme enum and conversion functions
+- `build.rs` - Build script for processing dictionary and audio files
+- `audio/` - Pre-recorded WAV files for each phoneme
+- `build/` - Build-time resources including CMU dictionary
+
+### pronouncer_bin
+Command-line interface executable:
+- `src/main.rs` - CLI implementation
+- Handles argument parsing and file I/O
+
+### Key Components
+
+1. **Build System**
+   - Processes CMU dictionary at compile time
+   - Serializes phoneme WAV files into binary data
+   - Generates optimized lookup tables
+
+2. **Phoneme System**
+   - 39 distinct phonemes based on CMU dictionary
+   - Each phoneme has a corresponding WAV recording
+   - Efficient enum-based representation
+
+3. **Audio Processing**
+   - 44.1kHz 16-bit mono WAV output
+   - Crossfading algorithm for smooth transitions
+   - Lazy loading of audio data via static compilation
+
+4. **Dictionary System**
+   - CMU dictionary-based word to phoneme conversion
+   - Fallback to character-by-character pronunciation
+   - Efficient hashmap-based lookups
 
 ## Technical Details
 
-The system uses the CMU (Carnegie Mellon University) phonetic dictionary system with 39 distinct phonemes. Each phoneme has a corresponding pre-recorded WAV file that is compiled into the binary at build time. The synthesis process involves:
+### Build Process
+1. The build script (`build.rs`) processes the CMU dictionary and WAV files
+2. Dictionary is converted to a binary lookup table
+3. WAV files are serialized into the binary
+4. Lazy static initialization ensures efficient runtime loading
 
-1. Looking up words in the CMU dictionary
-2. Converting to phoneme sequences
-3. Concatenating phoneme audio with crossfading
-4. Outputting the final WAV file
+### Audio Synthesis Process
+1. Input text is normalized and split into words
+2. Words are looked up in the CMU dictionary
+3. Unknown words fall back to character-by-character pronunciation
+4. Phoneme sequences are converted to audio samples
+5. Advanced crossfading is applied between phonemes
+6. Final audio is written to WAV file
 
-## License
+### Performance Considerations
+- Static compilation of audio data eliminates file I/O
+- Lazy loading prevents unnecessary memory usage
+- Efficient hashmap-based dictionary lookups
+- Optimized crossfading algorithm for smooth transitions
 
-[Add your chosen license here]
+## Dependencies
+
+Core dependencies:
+- `bincode`: Fast serialization
+- `hashbrown`: High-performance hashmaps
+- `hound`: WAV file handling
+- `lazy_static`: Efficient static initialization
+- `serde`: Serialization framework
 
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
+
+Before contributing:
+1. Ensure all tests pass: `cargo test`
+2. Format code: `cargo fmt`
+3. Run clippy: `cargo clippy`
+
+## License
+
+[Add your chosen license here]
