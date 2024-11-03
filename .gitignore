@@ -5,3 +5,5 @@ pronouncer_lib/build/*.bin
 **/*.rs.bk
 output.wav
 .idea/
+.aider*
+.env

@@ -7,7 +7,6 @@ A Rust-based text-to-speech synthesizer that uses the CMU phonetic dictionary an
 - Text-to-speech synthesis using CMU phonetic dictionary
 - High-quality pre-recorded phonemes for natural sound
 - Smooth audio transitions using advanced crossfading
-- Support for both word and character-by-character pronunciation
 - Outputs standard WAV audio files (44.1kHz, 16-bit)
 - Static compilation of audio data for standalone binaries
 
@@ -34,6 +33,8 @@ Enter a string: hello world
 ```
 
 The program will generate an `output.wav` file containing the synthesized speech.
+
+------
 
 ## Project Structure
 
@@ -116,4 +117,4 @@ Before contributing:
 
 ## License
 
-[Add your chosen license here]
+MIT
