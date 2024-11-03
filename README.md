@@ -1,6 +1,6 @@
 # Pronouncer
 
-A Rust-based text-to-speech synthesizer that uses the CMU phonetic dictionary and pre-recorded phonemes to generate natural-sounding speech.
+A Rust-based text-to-speech synthesizer that uses the CMU phonetic dictionary and pre-recorded phonemes to generate funny-sounding speech using my voice (or your own samples which you can compile into the program by replacing the ones in [pronouncer_lib/audio](./pronouncer_lib/audio)).
 
 ## Features
 
